@@ -17,6 +17,7 @@ public class CWAutonRedNear extends CWAuton {
         // 1 Do all the crap with the jewel
         motionlessJewelRoutine(RED);
 
+
         // 2 Turn towards the parking space
         encoderDrive(-turnDis(0.31), turnDis(0.31), 0.75);
 

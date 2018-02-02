@@ -167,6 +167,8 @@ public abstract class CWAuton extends LinearOpMode {
             //Knock over the correct jewel
             if (leftRedness < rightRedness) jewelPitch.setPosition(0.8);
             if (rightRedness < leftRedness) jewelPitch.setPosition(0.2);
+
+
         } else if(color == BLUE) {
             if (leftRedness > rightRedness) jewelPitch.setPosition(0.8);
             if (rightRedness > leftRedness) jewelPitch.setPosition(0.2);
@@ -182,8 +184,7 @@ public abstract class CWAuton extends LinearOpMode {
     public void motionlessJewelRoutine(int color) {
         jewelCol.enableLed(true);
 
-        jewelYaw.setPosition(0.5);
-        jewelPitch.setPosition(0.0);
+        resetJewelStick();
 
         sleep(1000);
 
@@ -195,7 +196,6 @@ public abstract class CWAuton extends LinearOpMode {
 
         jewelPitch.setPosition(0.5);
         sleep(500);
-
 
         jewelYaw.setPosition(0.0);
         sleep(1000);
@@ -211,12 +211,13 @@ public abstract class CWAuton extends LinearOpMode {
 
         sleep(1000);
 
-        jewelPitch.setPosition(0.5);
+        encoderDrive(2, 2, 1.0);
         sleep(500);
-        jewelYaw.setPosition(0.5);
-        sleep(500);
-        jewelPitch.setPosition(0.0);
-        sleep(500);
+        resetJewelStick();
+    }
 
+    public void resetJewelStick() {
+        jewelYaw.setPosition(0.5);
+        jewelPitch.setPosition(0.0);
     }
 }
