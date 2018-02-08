@@ -32,8 +32,11 @@ public abstract class CWAuton extends LinearOpMode {
 
     protected static final byte RED = 0;
     protected static final byte BLUE = 1;
+    protected static final byte LEFT = 1;
+    protected static final byte RIGHT = -1;
 
-    public Servo jewelPitch, jewelYaw, glyphPusher, leftGlyphGrabber, rightGlyphGrabber;
+    public Servo jewelYaw;
+    public Servo jewelPitch, glyphPusher, leftGlyphGrabber, rightGlyphGrabber;
     private VuforiaLocalizer vuforia;
     private VuforiaTrackable relicTemplate;
 
@@ -68,10 +71,11 @@ public abstract class CWAuton extends LinearOpMode {
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
         jewelCol = hardwareMap.get(ColorSensor.class, "jewelCol");
-        jewelCol.enableLed(false);
+        jewelCol.enableLed(true);
 
         //Woot
         telemetry.addData("Initialized", "Yay");
+        resetJewelStick();
     }
 
     // distances should be in inches
@@ -120,17 +124,17 @@ public abstract class CWAuton extends LinearOpMode {
     }
 
     @Deprecated
-    public void jewelRoutine(int color) {
+    public void jewelRoutine(int alliance) {
         //Put the jewel stick in the up position
-        jewelYaw.setPosition(0.5);
-        jewelPitch.setPosition(0.0);
+        jewelYaw.setPosition(0.4);
+        jewelPitch.setPosition(0.09);
 
         //Drive towards the jewels
         encoderDrive(-2.5, -2.5, 0.50);
 
         //Put the jewel stick in the down middle position
+        jewelYaw.setPosition(0.4);
         jewelPitch.setPosition(0.5);
-        jewelYaw.setPosition(1.0);
 
         jewelCol.enableLed(true);
 
@@ -163,61 +167,63 @@ public abstract class CWAuton extends LinearOpMode {
         //Drive forward
         encoderDrive(-2, -2, 1.0);
 
-        if(color == RED) {
+        if(alliance == RED) {
             //Knock over the correct jewel
             if (leftRedness < rightRedness) jewelPitch.setPosition(0.8);
             if (rightRedness < leftRedness) jewelPitch.setPosition(0.2);
 
 
-        } else if(color == BLUE) {
+        } else if(alliance == BLUE) {
             if (leftRedness > rightRedness) jewelPitch.setPosition(0.8);
             if (rightRedness > leftRedness) jewelPitch.setPosition(0.2);
         }
 
         sleep(1000);
-
-        jewelYaw.setPosition(0.5);
-        sleep(1000);
-        jewelPitch.setPosition(0.0);
+        resetJewelStick();
     }
 
-    public void motionlessJewelRoutine(int color) {
-        jewelCol.enableLed(true);
+    public void motionlessJewelRoutine(int alliance) {
+        //jewelCol.enableLed(true);
 
-        resetJewelStick();
-
-        sleep(1000);
-
+        // down, measuring right jewel
         jewelPitch.setPosition(0.6);
-        jewelYaw.setPosition(0.5);
+
         int rightRedness = jewelCol.red();
+        telemetry.addData("Red: ", rightRedness);
+        int rightBlueness = jewelCol.blue();
+        telemetry.addData("Blue: ", rightBlueness);
 
         sleep(1000);
 
-        jewelPitch.setPosition(0.5);
-        sleep(500);
-
-        jewelYaw.setPosition(0.0);
-        sleep(1000);
-
-        if(color == RED) {
+        if(alliance == RED) {
             //Knock over the correct jewel
-            if (rightRedness > 0) jewelPitch.setPosition(0.8);
-            else jewelPitch.setPosition(0.2);
-        } else if(color == BLUE) {
-            if (rightRedness > 0) jewelPitch.setPosition(0.2);
-            else jewelPitch.setPosition(0.8);
+            if (rightRedness > rightBlueness) {
+                knockJewel(LEFT);
+            } else {
+                knockJewel(RIGHT);
+            }
+        } else if(alliance == BLUE) {
+            if (rightRedness > rightBlueness) {
+                knockJewel(RIGHT);
+            } else {
+                knockJewel(LEFT);
+            }
         }
 
         sleep(1000);
 
-        encoderDrive(2, 2, 1.0);
+        encoderDrive(24.5, 24.5, 1.0);
         sleep(500);
         resetJewelStick();
     }
 
+    public void knockJewel(int dir) {
+        encoderDrive(-(dir*2.0), (dir*2.0), 0.75);
+        sleep(500);
+        encoderDrive((dir*2.0) , -(dir*2.0), 0.75);
+    }
+
     public void resetJewelStick() {
-        jewelYaw.setPosition(0.5);
-        jewelPitch.setPosition(0.0);
+        jewelPitch.setPosition(0.08);
     }
 }
