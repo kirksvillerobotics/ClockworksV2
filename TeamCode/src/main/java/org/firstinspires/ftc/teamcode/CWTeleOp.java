@@ -47,12 +47,11 @@ public class CWTeleOp extends OpMode {
         //So directions will be the same for both motors
         rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //turn led off
         jewelCol.enableLed(false);
 
         telemetry.addData("Init", "main stuff completed");
 
-        jewelYaw.setPosition(0.4);
+        //jewelYaw.setPosition(0.4);
         jewelPitch.setPosition(0.09);
 
         rightGrabber.setPosition(0.85);

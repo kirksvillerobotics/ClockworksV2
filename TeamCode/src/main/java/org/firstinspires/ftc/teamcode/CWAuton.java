@@ -100,9 +100,6 @@ public abstract class CWAuton extends LinearOpMode {
 
         // loop while robot is moving
         while(leftDrive.isBusy() || rightDrive.isBusy()) {
-            telemetry.addData("Left running to:", leftDis);
-            telemetry.addData("Right running to:", rightDis);
-            telemetry.update();
             if(! opModeIsActive()) {
                 leftDrive.setPower(0);
                 rightDrive.setPower(0);
@@ -186,7 +183,9 @@ public abstract class CWAuton extends LinearOpMode {
         //jewelCol.enableLed(true);
 
         // down, measuring right jewel
-        jewelPitch.setPosition(0.6);
+        jewelPitch.setPosition(0.7);
+
+        sleep(1000);
 
         int rightRedness = jewelCol.red();
         telemetry.addData("Red: ", rightRedness);
@@ -198,29 +197,53 @@ public abstract class CWAuton extends LinearOpMode {
         if(alliance == RED) {
             //Knock over the correct jewel
             if (rightRedness > rightBlueness) {
+                telemetry.addData("knock:", "RED (left)");
+                telemetry.update();
                 knockJewel(LEFT);
             } else {
+                telemetry.addData("knock:", "RED (right)");
+                telemetry.update();
                 knockJewel(RIGHT);
             }
         } else if(alliance == BLUE) {
             if (rightRedness > rightBlueness) {
+                telemetry.addData("knock:", "BLUE (right)");
+                telemetry.update();
                 knockJewel(RIGHT);
             } else {
+                telemetry.addData("knock:", "BLUE (left)");
+                telemetry.update();
                 knockJewel(LEFT);
             }
         }
 
+
         sleep(1000);
 
-        encoderDrive(24.5, 24.5, 1.0);
+        encoderDrive(26, 26, 1.0);
         sleep(500);
         resetJewelStick();
     }
 
     public void knockJewel(int dir) {
-        encoderDrive(-(dir*2.0), (dir*2.0), 0.75);
-        sleep(500);
-        encoderDrive((dir*2.0) , -(dir*2.0), 0.75);
+
+        if(dir == RIGHT) {
+            encoderDrive(4.0, -4.0, 0.75);
+            sleep(500);
+            resetJewelStick();
+            sleep(500);
+            encoderDrive(-4.0, 4.0, 0.75);
+            sleep(500);
+        }
+
+        if(dir == LEFT) {
+            encoderDrive(-4.0, 4.0, 0.75);
+            sleep(500);
+            resetJewelStick();
+            sleep(500);
+            encoderDrive(4.0, -4.0, 0.75);
+            sleep(500);
+        }
     }
 
     public void resetJewelStick() {

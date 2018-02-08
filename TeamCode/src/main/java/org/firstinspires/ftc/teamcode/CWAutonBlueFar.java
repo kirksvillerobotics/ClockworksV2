@@ -17,9 +17,6 @@ public class CWAutonBlueFar extends CWAuton {
         // 1 Do the jewel thing
         motionlessJewelRoutine(BLUE);
 
-        // 2 Drive backwards off the platform
-        encoderDrive(24.5, 24.5, 0.75);
-
         // 3 Rotate towards glyph boxes
         encoderDrive(turnDis(0.45),-turnDis(0.45), 0.75);
 
