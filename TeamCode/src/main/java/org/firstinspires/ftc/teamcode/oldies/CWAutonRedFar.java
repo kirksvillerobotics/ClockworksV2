@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldies;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -18,9 +18,9 @@ public class CWAutonRedFar extends CWAuton {
         motionlessJewelRoutine(RED);
 
         // 3 Rotate towards glyph boxes
-        encoderDrive(-turnDis(0.45), turnDis(0.45), 0.75);
+        encoderDrive(-turnDis(55.0), turnDis(55.0), 0.75, 2000);
 
         // 4 Drive into the glyph zone
-        encoderDrive(-41, -42, 0.75);
+        encoderDrive(-39, -39, 0.75, 4000);
     }
 }

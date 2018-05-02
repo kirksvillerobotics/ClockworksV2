@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldies;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,6 +16,7 @@ public class CWTeleOp extends OpMode {
 
     private ColorSensor jewelCol;
     private boolean togGrab;
+    private boolean a2Available = false;
 
     private int loop = 0;
 
@@ -114,17 +115,20 @@ public class CWTeleOp extends OpMode {
         } else liftSpeed = 0.0;
 
         //Controls for GLYPH GRABBERS, LEFT AND RIGHT (gamepad 2 A & B)
-        if(gamepad2.a) {
+        if(gamepad2.a && a2Available) {
             if (togGrab) { //Grab
-                leftGrabber.setPosition(0.46);
-                rightGrabber.setPosition(0.46);
+                leftGrabber.setPosition(0.40);
+                rightGrabber.setPosition(0.52);
                 upperGrabber.setPosition(0.14);
-            } else if (togGrab) { //Release
+                togGrab = false;
+            } else { //Release
                 leftGrabber.setPosition(0.53);
                 rightGrabber.setPosition(0.38);
                 upperGrabber.setPosition(0.01);
+                togGrab = true;
             }
-        }
+            a2Available = false;
+        } else if(! gamepad2.a) a2Available = true;
 
         leftDrive.setPower(leftSpeed);
         rightDrive.setPower(rightSpeed);

@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldies;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Blue Near")
-public class CWAutonBlueNear extends CWAuton {
+@Autonomous(name="Red Near")
+public class CWAutonRedNear extends CWAuton {
 
     @Override
     public void runOpMode(){
@@ -15,12 +15,13 @@ public class CWAutonBlueNear extends CWAuton {
         // 30 SEC AUTONOMOUS PERIOD ----------------------------------------------------------------
 
         // 1 Do all the crap with the jewel
-        motionlessJewelRoutine(BLUE);
+        motionlessJewelRoutine(RED);
 
         // 2 Turn towards the parking space
-        encoderDrive(turnDis(0.25), -turnDis(0.25), 0.75);
+        encoderDrive(-turnDis(45.0), turnDis(45.0), 0.75, 2000);
 
         // 3 Drive into the parking space
-        encoderDrive(-42, -42, 1.0);
+        encoderDrive(-40, -40, 0.75, 4000);
     }
+
 }

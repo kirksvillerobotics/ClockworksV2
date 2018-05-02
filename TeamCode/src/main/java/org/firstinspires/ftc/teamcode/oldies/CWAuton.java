@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldies;
 
 import android.app.Activity;
 import android.view.View;
@@ -73,6 +73,7 @@ public abstract class CWAuton extends LinearOpMode {
         jewelCol = hardwareMap.get(ColorSensor.class, "jewelCol");
         jewelCol.enableLed(true);
 
+
         //Woot
         telemetry.addData("Initialized", "Yay");
         resetJewelStick();
@@ -80,7 +81,7 @@ public abstract class CWAuton extends LinearOpMode {
 
     // distances should be in inches
     // speed should usually be a constant
-    public void encoderDrive(double leftDis, double rightDis, double speed){
+    public void encoderDrive(double leftDis, double rightDis, double speed, int duration){
 
         // the distance the encoders will run in 1/4 degrees
         int leftTar = leftDrive.getCurrentPosition() + (int)(leftDis * DEG_PER_INCH);
@@ -98,8 +99,10 @@ public abstract class CWAuton extends LinearOpMode {
         leftDrive.setPower(speed);
         rightDrive.setPower(speed);
 
+        long time = System.currentTimeMillis();
+
         // loop while robot is moving
-        while(leftDrive.isBusy() || rightDrive.isBusy()) {
+        while( (leftDrive.isBusy() || rightDrive.isBusy()) && (System.currentTimeMillis() < time+duration)) {
             if(! opModeIsActive()) {
                 leftDrive.setPower(0);
                 rightDrive.setPower(0);
@@ -116,68 +119,68 @@ public abstract class CWAuton extends LinearOpMode {
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public static double turnDis(double frac){
-        return ROBOT_DIAM * Math.PI * frac;
+    public static double turnDis(double degrees){
+        return ROBOT_DIAM * Math.PI * 2 * (degrees/360.0);
     }
-
-    @Deprecated
-    public void jewelRoutine(int alliance) {
-        //Put the jewel stick in the up position
-        jewelYaw.setPosition(0.4);
-        jewelPitch.setPosition(0.09);
-
-        //Drive towards the jewels
-        encoderDrive(-2.5, -2.5, 0.50);
-
-        //Put the jewel stick in the down middle position
-        jewelYaw.setPosition(0.4);
-        jewelPitch.setPosition(0.5);
-
-        jewelCol.enableLed(true);
-
-        //Put the stick in the left position and measure the redness of the left jewel
-        jewelPitch.setPosition(0.4);
-        sleep(1000);
-        int leftRedness = jewelCol.red();
-        telemetry.addData("Left redness", leftRedness);
-
-        //Put the stick in the right position and measure the redness of the right jewel
-        jewelPitch.setPosition(0.6);
-        sleep(1000);
-        int rightRedness = jewelCol.red();
-        telemetry.addData("Right redness", rightRedness);
-
-        //Put the stick in the middle position again
-        jewelPitch.setPosition(0.5);
-        sleep(1000);
-
-        jewelCol.enableLed(false);
-
-        //Drive backwards
-        encoderDrive(2, 2, 0.4);
-        sleep(1000);
-
-        //Put the stick in the upside down position
-        jewelYaw.setPosition(0.0);
-        sleep(1000);
-
-        //Drive forward
-        encoderDrive(-2, -2, 1.0);
-
-        if(alliance == RED) {
-            //Knock over the correct jewel
-            if (leftRedness < rightRedness) jewelPitch.setPosition(0.8);
-            if (rightRedness < leftRedness) jewelPitch.setPosition(0.2);
-
-
-        } else if(alliance == BLUE) {
-            if (leftRedness > rightRedness) jewelPitch.setPosition(0.8);
-            if (rightRedness > leftRedness) jewelPitch.setPosition(0.2);
-        }
-
-        sleep(1000);
-        resetJewelStick();
-    }
+//
+//    @Deprecated
+//    public void jewelRoutine(int alliance) {
+//        //Put the jewel stick in the up position
+//        jewelYaw.setPosition(0.4);
+//        jewelPitch.setPosition(0.09);
+//
+//        //Drive towards the jewels
+//        encoderDrive(-2.5, -2.5, 0.50);
+//
+//        //Put the jewel stick in the down middle position
+//        jewelYaw.setPosition(0.4);
+//        jewelPitch.setPosition(0.5);
+//
+//        jewelCol.enableLed(true);
+//
+//        //Put the stick in the left position and measure the redness of the left jewel
+//        jewelPitch.setPosition(0.4);
+//        sleep(1000);
+//        int leftRedness = jewelCol.red();
+//        telemetry.addData("Left redness", leftRedness);
+//
+//        //Put the stick in the right position and measure the redness of the right jewel
+//        jewelPitch.setPosition(0.6);
+//        sleep(1000);
+//        int rightRedness = jewelCol.red();
+//        telemetry.addData("Right redness", rightRedness);
+//
+//        //Put the stick in the middle position again
+//        jewelPitch.setPosition(0.5);
+//        sleep(1000);
+//
+//        jewelCol.enableLed(false);
+//
+//        //Drive backwards
+//        encoderDrive(2, 2, 0.4);
+//        sleep(1000);
+//
+//        //Put the stick in the upside down position
+//        jewelYaw.setPosition(0.0);
+//        sleep(1000);
+//
+//        //Drive forward
+//        encoderDrive(-2, -2, 1.0);
+//
+//        if(alliance == RED) {
+//            //Knock over the correct jewel
+//            if (leftRedness < rightRedness) jewelPitch.setPosition(0.8);
+//            if (rightRedness < leftRedness) jewelPitch.setPosition(0.2);
+//
+//
+//        } else if(alliance == BLUE) {
+//            if (leftRedness > rightRedness) jewelPitch.setPosition(0.8);
+//            if (rightRedness > leftRedness) jewelPitch.setPosition(0.2);
+//        }
+//
+//        sleep(1000);
+//        resetJewelStick();
+//    }
 
     public void motionlessJewelRoutine(int alliance) {
         //jewelCol.enableLed(true);
@@ -185,12 +188,21 @@ public abstract class CWAuton extends LinearOpMode {
         // down, measuring right jewel
         jewelPitch.setPosition(0.7);
 
+        int rightRedness = 0;
+        int rightBlueness = 0;
+
         sleep(1000);
 
-        int rightRedness = jewelCol.red();
-        telemetry.addData("Red: ", rightRedness);
-        int rightBlueness = jewelCol.blue();
-        telemetry.addData("Blue: ", rightBlueness);
+        //while(rightBlueness == 0 && rightBlueness == 0 && jewelPitch.getPosition() > 0.55) {
+            sleep(100);
+            rightRedness = jewelCol.red();
+            telemetry.addData("Red: ", rightRedness);
+            rightBlueness = jewelCol.blue();
+            telemetry.addData("Blue: ", rightBlueness);
+            telemetry.update();
+
+            //jewelPitch.setPosition(jewelPitch.getPosition() - 0.01);
+        //}
 
         sleep(1000);
 
@@ -200,27 +212,32 @@ public abstract class CWAuton extends LinearOpMode {
                 telemetry.addData("knock:", "RED (left)");
                 telemetry.update();
                 knockJewel(LEFT);
-            } else {
+            } else if(rightBlueness > rightRedness) {
                 telemetry.addData("knock:", "RED (right)");
                 telemetry.update();
                 knockJewel(RIGHT);
+            } else {
+                jewelPitch.setPosition(0.6);
+                sleep(400);
+
             }
         } else if(alliance == BLUE) {
             if (rightRedness > rightBlueness) {
                 telemetry.addData("knock:", "BLUE (right)");
                 telemetry.update();
                 knockJewel(RIGHT);
-            } else {
+            } else if(rightBlueness > rightRedness){
                 telemetry.addData("knock:", "BLUE (left)");
                 telemetry.update();
                 knockJewel(LEFT);
+            } else {
+
             }
         }
 
-
         sleep(1000);
 
-        encoderDrive(26, 26, 1.0);
+        encoderDrive(26, 26, 1.0, 3000);
         sleep(500);
         resetJewelStick();
     }
@@ -228,20 +245,20 @@ public abstract class CWAuton extends LinearOpMode {
     public void knockJewel(int dir) {
 
         if(dir == RIGHT) {
-            encoderDrive(4.0, -4.0, 0.75);
+            encoderDrive(4.0, -4.0, 0.75, 1000);
             sleep(500);
             resetJewelStick();
             sleep(500);
-            encoderDrive(-4.0, 4.0, 0.75);
+            encoderDrive(-4.0, 4.0, 0.75, 1000);
             sleep(500);
         }
 
         if(dir == LEFT) {
-            encoderDrive(-4.0, 4.0, 0.75);
+            encoderDrive(-4.0, 4.0, 0.75, 1000);
             sleep(500);
             resetJewelStick();
             sleep(500);
-            encoderDrive(4.0, -4.0, 0.75);
+            encoderDrive(4.0, -4.0, 0.75, 1000);
             sleep(500);
         }
     }
