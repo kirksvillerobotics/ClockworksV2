@@ -55,8 +55,8 @@ public class TeleOPpandemonium0 extends OpMode {
             telemetry.addData("Right Motor", "Off");
         }
 
-        armMove.setPower(gamepad2.right_trigger); //up?
-        armMove.setPower(-gamepad2.left_trigger); //down?
+        armMove.setPower(gamepad2.right_trigger); //up?     //FIXME
+        armMove.setPower(-gamepad2.left_trigger); //down?   //FIXME 
 
         // claw servos
         if (gamepad2.right_stick_x > THRESHOLD)
