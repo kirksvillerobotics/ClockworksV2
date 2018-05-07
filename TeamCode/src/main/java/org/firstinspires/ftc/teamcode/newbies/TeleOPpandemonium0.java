@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  **/
 
 @TeleOp (name = "TeleOp Pandemonium")
-public class TeleOPpandemonium extends OpMode {
+public class TeleOPpandemonium0 extends OpMode {
 
     private DcMotor leftDrive;
     private DcMotor rightDrive;
