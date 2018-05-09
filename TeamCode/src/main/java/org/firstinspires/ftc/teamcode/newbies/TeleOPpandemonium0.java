@@ -39,7 +39,7 @@ public class TeleOPpandemonium0 extends OpMode {
 
         // left stick moved vertically moves the left drive motor
         if (Math.abs(gamepad1.left_stick_y) > THRESHOLD) {
-            leftDrive.setPower(gamepad1.left_stick_y); // 0.0 - 1.0
+            leftDrive.setPower(-gamepad1.left_stick_y); // 0.0 - 1.0
             telemetry.addData("Left Motor", "On");
         } else {
             leftDrive.setPower(0.0);
@@ -55,22 +55,39 @@ public class TeleOPpandemonium0 extends OpMode {
             telemetry.addData("Right Motor", "Off");
         }
 
-        armMove.setPower(gamepad2.right_trigger); //up?     //FIXME
-        armMove.setPower(-gamepad2.left_trigger); //down?   //FIXME 
+        // moving the arm
+        boolean left = gamepad2.left_trigger > 0.05;
+        boolean right = gamepad2.right_trigger > 0.05;
+
+        if (!left && !right || left && right) {  //look up order of operations for further use
+            armMove.setPower(0);
+        }
+        if (left && !right) {
+            armMove.setPower(-gamepad2.left_trigger/2); // up
+        }
+        if (right && !left) {
+            armMove.setPower(gamepad2.right_trigger/2); //down
+        }
+
+        //armMove.setPower(gamepad2.right_trigger); //up?     //FIXME
+        //armMove.setPower(-gamepad2.left_trigger); //down?   //FIXME
 
         // claw servos
-        if (gamepad2.right_stick_x > THRESHOLD)
+        if (gamepad2.right_stick_y > THRESHOLD)
             rightMove.setPosition(1.00);
-        else if (gamepad2.right_stick_x < -THRESHOLD)
+        else if (gamepad2.right_stick_y < -THRESHOLD)
             rightMove.setPosition(0.00);
         else
             rightMove.setPosition(0.50);
 
-        if (gamepad2.left_stick_x > THRESHOLD)
+        if (gamepad2.left_stick_y > THRESHOLD)
             leftMove.setPosition(1.00);
-        else if (gamepad2.left_stick_x < -THRESHOLD)
+        else if (gamepad2.left_stick_y < -THRESHOLD)
             leftMove.setPosition(0.00);
         else
             leftMove.setPosition(0.50);
+
+
+        
     }
 }
